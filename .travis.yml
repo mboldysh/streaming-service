@@ -6,7 +6,7 @@ go:
 services:
   - docker
 
-before-install:
+before_install:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
   
