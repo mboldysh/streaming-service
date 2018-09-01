@@ -2,16 +2,20 @@ language: go
 sudo: required
 go:
   - 1.10.x
+python:
+  - 3.6
 
 services:
   - docker
 
 before_install:
+  - sudo apt-get update
+  - sudo apt-get install python3-pip
   - pip3 install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
   
 script:
-  - eval $(aws ecr get-login --region $AWS_REGION)
+  - eval $(aws ecr get-login --no-include-email --region $AWS_REGION)
   - docker build -t streaming-service:latest .
   - docker tag streaming-service:latest $IMAGE_REPO_URL:latest
   - docker push $IMAGE_REPO_URL:latest
