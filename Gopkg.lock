@@ -45,14 +45,6 @@
   version = "v3.3.2"
 
 [[projects]]
-  digest = "1:54d7b4b9ab2bb2bae35b55eea900bc8fe15cba05a95fc78bf7fd7b82a9a07afa"
-  name = "github.com/go-chi/render"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "3215478343fbc559bd3fc08f7031bb134d6bdad5"
-  version = "v1.0.1"
-
-[[projects]]
   digest = "1:fe8a03a8222d5b913f256972933d26d24ad7c8286692a42943bc01633cc8fce3"
   name = "github.com/go-ini/ini"
   packages = ["."]
@@ -73,12 +65,12 @@
   input-imports = [
     "github.com/aws/aws-sdk-go-v2/aws",
     "github.com/aws/aws-sdk-go-v2/aws/awserr",
+    "github.com/aws/aws-sdk-go-v2/aws/endpoints",
     "github.com/aws/aws-sdk-go-v2/aws/external",
     "github.com/aws/aws-sdk-go-v2/service/s3",
     "github.com/aws/aws-sdk-go-v2/service/s3/s3manager",
     "github.com/go-chi/chi",
     "github.com/go-chi/chi/middleware",
-    "github.com/go-chi/render",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

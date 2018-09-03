@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  minio:
+    image: minio/minio
+    volumes:
+      - minio-data:/export
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: test123
+      MINIO_SECRET_KEY: test123456
+    command: server /export
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
+      interval: 1s
+      timeout: 3s
+      retries: 10
+  streaming-service:
+    image: streaming-service:latest
+    ports: 
+      - "8080:8080"
+    environment:
+      AWS_ACCESS_KEY: test123
+      AWS_SECRET_ACCESS_KEY: test123456
+    command: -dev
+    restart: on-failure
+    depends_on:
+      - minio
+    
+volumes:
+  minio-data:

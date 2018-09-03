@@ -22,4 +22,4 @@ COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs/
 
 EXPOSE 8080 
 
-CMD ["streaming-service"]
+ENTRYPOINT ["streaming-service"]
