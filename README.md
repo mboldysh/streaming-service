@@ -14,7 +14,7 @@ There are two options:
 make
 # build streaming-service docker image
 docker build -t streaming-service .
-# up streming-service and minio in docker
+# up streaming-service and minio
 docker-compose -f docker-compose.dev.yml up 
 ```
 
