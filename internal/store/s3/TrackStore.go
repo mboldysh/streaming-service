@@ -1,6 +1,7 @@
 package s3
 
 import (
+	"fmt"
 	"io"
 	"time"
 
@@ -20,7 +21,7 @@ type TrackStore struct {
 
 func NewTrackStore(client *s3.S3, uploader *s3manager.Uploader, bucketName string, expireTime time.Duration) (*TrackStore, error) {
 
-	_, err := bukcet.CreateIfDoesntExists(client, bucketName)
+	_, err := bucket.CreateIfDoesntExists(client, bucketName)
 
 	if err != nil {
 		return nil, err
@@ -74,16 +75,20 @@ func (s *TrackStore) FindAll(userID string) ([]model.Track, error) {
 }
 
 func (s *TrackStore) GetPresignedURL(key, trackName string) (*model.PresignedTrack, error) {
-	req := s.client.GetObjectRequest(&s3.GetObjectInput{
-		Bucket: aws.String(s.bucketName),
-		Key:    aws.String(key),
-	})
-
-	_, err := req.Send()
+	ok, err := bucket.ObjectExists(s.client, s.bucketName, key)
 
 	if err != nil {
 		return nil, err
 	}
+
+	if !ok {
+		return nil, fmt.Errorf("Object with key %s does not exists", key)
+	}
+
+	req := s.client.GetObjectRequest(&s3.GetObjectInput{
+		Bucket: aws.String(s.bucketName),
+		Key:    aws.String(key),
+	})
 
 	url, header, err := req.PresignRequest(s.expireTime)
 

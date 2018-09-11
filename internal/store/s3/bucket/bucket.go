@@ -1,4 +1,4 @@
-package bukcet
+package bucket
 
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -40,6 +40,28 @@ func Exists(client *s3.S3, bucketName string) (bool, error) {
 			}
 		} else {
 			return false, err
+		}
+	}
+
+	return true, nil
+}
+
+func ObjectExists(client *s3.S3, bucketName, key string) (bool, error) {
+	req := client.GetObjectRequest(&s3.GetObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(key),
+	})
+
+	_, err := req.Send()
+
+	if err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			case s3.ErrCodeNoSuchKey:
+				return false, nil
+			default:
+				return false, err
+			}
 		}
 	}
 
