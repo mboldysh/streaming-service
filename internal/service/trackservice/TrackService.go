@@ -2,6 +2,7 @@ package trackservice
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/mboldysh/streaming-service/internal/model"
 	"github.com/mboldysh/streaming-service/internal/service"
@@ -24,7 +25,18 @@ func (service trackService) Upload(track model.UploadTrack, userID string) error
 }
 
 func (s trackService) FindAll(userID string) ([]model.Track, error) {
-	return s.trackStore.FindAll(userID)
+	tracks, err := s.trackStore.FindAll(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	prefix := fmt.Sprintf("%s/", userID)
+
+	for index, track := range tracks {
+		tracks[index].Name = strings.TrimPrefix(track.Name, prefix)
+	}
+	return tracks, err
 }
 
 func (s trackService) GetPresignedURL(userID, trackName string) (*model.PresignedTrack, error) {
