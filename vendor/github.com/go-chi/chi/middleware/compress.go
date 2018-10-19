@@ -20,15 +20,15 @@ const (
 )
 
 var defaultContentTypes = map[string]struct{}{
-	"text/html":                struct{}{},
-	"text/css":                 struct{}{},
-	"text/plain":               struct{}{},
-	"text/javascript":          struct{}{},
-	"application/javascript":   struct{}{},
-	"application/x-javascript": struct{}{},
-	"application/json":         struct{}{},
-	"application/atom+xml":     struct{}{},
-	"application/rss+xml":      struct{}{},
+	"text/html":                {},
+	"text/css":                 {},
+	"text/plain":               {},
+	"text/javascript":          {},
+	"application/javascript":   {},
+	"application/x-javascript": {},
+	"application/json":         {},
+	"application/atom+xml":     {},
+	"application/rss+xml":      {},
 }
 
 // DefaultCompress is a middleware that compresses response
