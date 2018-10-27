@@ -34,3 +34,23 @@ Resources:
                 VPC: !GetAtt VPC.Outputs.VPC
                 Subnets: !GetAtt VPC.Outputs.PublicSubnets
                 SecurityGroup: !GetAtt SecurityGroups.Outputs.LoadBalancerSecurityGroup
+
+    ECS:
+        Type: AWS::CloudFormation::Stack
+        Properties:
+            TemplateURL: https://s3.amazonaws.com/streaming-service-cloudformation/ecs-cluster.yaml
+            Parameters:
+                EnvironmentName: !Ref AWS::StackName
+                InstanceType: t2.micro
+                ClusterSize: 1
+                VPC: !GetAtt VPC.Outputs.VPC
+                SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
+                Subnets: !GetAtt VPC.Outputs.PrivateSubnets
+
+    LifecycleHook:
+        Type: AWS::CloudFormation::Stack
+        Properties:
+            TemplateURL: https://s3.amazonaws.com/streaming-service-cloudformation/lifecyclehook.yaml
+            Parameters:
+                Cluster: !GetAtt ECS.Outputs.Cluster
+                ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
