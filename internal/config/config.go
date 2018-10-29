@@ -21,7 +21,7 @@ var (
 
 var (
 	defaultListenAddr          = ":8080"
-	defaultBucketName          = "streaming-service-bucket"
+	defaultBucketName          = "streaming-service-data"
 	defaultPresignedExpireTime = 10 * time.Minute
 	defaultDev                 = false
 )
