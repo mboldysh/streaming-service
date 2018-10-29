@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"flag"
 	"time"
 
@@ -87,9 +86,9 @@ func createS3Client(cfg aws.Config, dev bool) (*s3.S3, error) {
 			return nil, err
 		}
 
-		if cfg.Region == "" {
-			return nil, errors.New("Set AWS_REGION env variable")
-		}
+		// if cfg.Region == "" {
+		// 	return nil, errors.New("Set AWS_REGION env variable")
+		// }
 
 		s3Client = s3.New(cfg)
 	}
