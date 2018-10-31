@@ -54,3 +54,19 @@ Resources:
             Parameters:
                 Cluster: !GetAtt ECS.Outputs.Cluster
                 ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
+
+    StreamingService:
+        Type: AWS::CloudFormation::Stack
+        Properties:
+            TemplateURL: https://s3.amazonaws.com/streaming-service-cloudformation/streaming-service.yaml
+            Parameters:
+                VPC: !GetAtt VPC.Outputs.VPC
+                Cluster: !GetAtt ECS.Outputs.Cluster
+                DesiredCount: 2
+                Listener: !GetAtt ALB.Outputs.Listener
+                Path: "/api/*"
+
+Outputs:
+    StreamingServiceUrl:
+        Description: The URL endpoint for the streaming-service
+        Value: !Join ["/", [ !GetAtt ALB.Outputs.LoadBalancerUrl, "api" ]]
