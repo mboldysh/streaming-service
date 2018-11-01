@@ -13,7 +13,17 @@ Parameters:
         Type: String
         Default: t2.micro
 
-    ClusterSize:
+    MinSize:
+        Description: How many ECS hosts do you want to initially deploy?
+        Type: Number
+        Default: 1
+
+    MaxSize:
+        Description: How many ECS hosts do you want to initially deploy?
+        Type: Number
+        Default: 1
+
+    DesiredCapacity:
         Description: How many ECS hosts do you want to initially deploy?
         Type: Number
         Default: 1
@@ -87,9 +97,9 @@ Resources:
         Properties:
             VPCZoneIdentifier: !Ref Subnets
             LaunchConfigurationName: !Ref ECSLaunchConfiguration
-            MinSize: !Ref ClusterSize
-            MaxSize: !Ref ClusterSize
-            DesiredCapacity: !Ref ClusterSize
+            MinSize: !Ref MinSize
+            MaxSize: !Ref MaxSize
+            DesiredCapacity: !Ref DesiredCapacity
             Tags:
                 - Key: Name
                   Value: !Sub ${EnvironmentName} ECS host
@@ -109,6 +119,70 @@ Resources:
                   - AlarmNotification
                   - ScheduledActions
                 WaitOnResourceSignals: true
+
+    ECSAutoScalingCPUReservationHighAlarm:
+        Type: AWS::CloudWatch::Alarm
+        Properties:
+            AlarmDescription: 'ECS Cluster CPU Reservation High'
+            Namespace: AWS/ECS
+            Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ECSCluster
+            MetricName: CPUReservation
+            ComparisonOperator: GreaterThanThreshold
+            Statistic: Average
+            Period: 300
+            EvaluationPeriods: 1
+            Threshold: 70
+            AlarmActions:
+                - !Ref ScaleOutPolicy
+
+    ECSAutoScalingCPUReservationLowAlarm:
+        Type: AWS::CloudWatch::Alarm
+        Properties:
+            AlarmDescription: 'ECS Cluster CPU Reservation Low'
+            Namespace: AWS/ECS
+            Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ECSCluster
+            MetricName: CPUReservation
+            ComparisonOperator: LessThanThreshold
+            Statistic: Average
+            Period: 300
+            EvaluationPeriods: 1
+            Threshold: 20
+            AlarmActions:
+                - !Ref ScaleInPolicy
+
+    ScaleOutPolicy:
+        Type: AWS::AutoScaling::ScalingPolicy
+        Properties:
+            AdjustmentType: ChangeInCapacity
+            AutoScalingGroupName: !Ref ECSAutoScalingGroup
+            PolicyType: StepScaling
+            MetricAggregationType: Average
+            EstimatedInstanceWarmup: 60
+            StepAdjustments:
+                - 
+                    MetricIntervalLowerBound: 0
+                    MetricIntervalUpperBound: 85
+                    ScalingAdjustment: 1
+                - 
+                    MetricIntervalLowerBound: 85
+                    ScalingAdjustment: 2
+
+    ScaleInPolicy:
+        Type: AWS::AutoScaling::ScalingPolicy
+        Properties:
+            AdjustmentType: ChangeInCapacity
+            AutoScalingGroupName: !Ref ECSAutoScalingGroup
+            PolicyType: StepScaling
+            MetricAggregationType: Average
+            EstimatedInstanceWarmup: 60
+            StepAdjustments:
+                -
+                    MetricIntervalUpperBound: 0
+                    ScalingAdjustment: -1
 
     ECSLaunchConfiguration:
         Type: AWS::AutoScaling::LaunchConfiguration
@@ -326,6 +400,7 @@ Resources:
                       - application-autoscaling:*
                       - cloudwatch:DescribeAlarms
                       - cloudwatch:PutMetricAlarm
+                      - cloudwatch:GetMetricStatistics
                       - ecs:DescribeServices
                       - ecs:UpdateService
                       Resource: "*"

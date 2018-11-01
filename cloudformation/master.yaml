@@ -42,7 +42,9 @@ Resources:
             Parameters:
                 EnvironmentName: !Ref AWS::StackName
                 InstanceType: t2.micro
-                ClusterSize: 1
+                MaxSize: 4
+                MinSize: 1
+                DesiredCapacity: 2
                 VPC: !GetAtt VPC.Outputs.VPC
                 SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
                 Subnets: !GetAtt VPC.Outputs.PrivateSubnets
@@ -62,9 +64,12 @@ Resources:
             Parameters:
                 VPC: !GetAtt VPC.Outputs.VPC
                 Cluster: !GetAtt ECS.Outputs.Cluster
+                MinCapacity: 1
+                MaxCapacity: 6
                 DesiredCount: 2
                 Listener: !GetAtt ALB.Outputs.Listener
                 Path: "/api/*"
+                ECSServiceAutoScalingRoleARN: !GetAtt ECS.Outputs.ECSServiceAutoScalingRole
 
 Outputs:
     StreamingServiceUrl:
