@@ -3,9 +3,12 @@ package main
 import (
 	"log"
 
+	"github.com/mboldysh/streaming-service/internal/router/userrouter"
+
+	"github.com/mboldysh/streaming-service/pkg/metrics"
+
+	"github.com/go-chi/chi/middleware"
 	"github.com/mboldysh/streaming-service/internal/config"
-	"github.com/mboldysh/streaming-service/internal/router"
-	"github.com/mboldysh/streaming-service/internal/router/trackhandler"
 	"github.com/mboldysh/streaming-service/internal/server"
 	"github.com/mboldysh/streaming-service/internal/service/trackservice"
 	"github.com/mboldysh/streaming-service/internal/store/s3"
@@ -26,12 +29,16 @@ func main() {
 
 	trackService := trackservice.New(trackStore)
 
-	trackHandler := trackhandler.New(trackService)
+	userrouter := userrouter.New(trackService)
 
-	r := router.Init(
-		trackHandler,
+	server := server.NewServer(cfg.ListenAddr)
+
+	server.InitMiddleware(middleware.Logger)
+
+	server.InitRoutes(
+		userrouter,
+		metrics.NewHealthCheck(),
 	)
 
-	server := server.NewServer(cfg.ListenAddr, r)
 	server.Run()
 }

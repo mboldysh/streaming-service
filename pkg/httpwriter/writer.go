@@ -1,4 +1,4 @@
-package writer
+package httpwriter
 
 import (
 	"encoding/json"
