@@ -4,7 +4,7 @@ import (
 	"io"
 )
 
-// UploadTrack model
+//UploadTrack model
 type UploadTrack struct {
 	Name string
 	File io.Reader

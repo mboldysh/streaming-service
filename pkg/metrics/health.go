@@ -3,8 +3,6 @@ package metrics
 import (
 	"net/http"
 
-	"github.com/go-chi/chi"
-
 	"github.com/mboldysh/streaming-service/pkg/httpwriter"
 	"github.com/mboldysh/streaming-service/pkg/router"
 )
@@ -16,9 +14,7 @@ func NewHealthCheck() router.Router {
 }
 
 func (h healthcheck) initRoutes() router.Router {
-	r := chi.NewRouter()
-	r.Get("/health", h.healthHandler)
-	return router.New("/metrics", r)
+	return router.NewRouter("/metrics/health", h.healthHandler)
 }
 
 func (h healthcheck) healthHandler(w http.ResponseWriter, r *http.Request) {

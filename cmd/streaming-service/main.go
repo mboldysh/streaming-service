@@ -3,11 +3,10 @@ package main
 import (
 	"log"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/mboldysh/streaming-service/internal/router/userrouter"
-
 	"github.com/mboldysh/streaming-service/pkg/metrics"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/mboldysh/streaming-service/internal/config"
 	"github.com/mboldysh/streaming-service/internal/server"
 	"github.com/mboldysh/streaming-service/internal/service/trackservice"
@@ -31,7 +30,7 @@ func main() {
 
 	userrouter := userrouter.New(trackService)
 
-	server := server.NewServer(cfg.ListenAddr)
+	server := server.New(cfg.ListenAddr)
 
 	server.InitMiddleware(middleware.Logger)
 

@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+//RespondWithJSON send HTTP response with specified payload in JSON format
 func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 
@@ -13,6 +14,8 @@ func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
+//RespondWithError send HTTP response with specifiend HTTP code and payload
+//in JSON format
 func RespondWithError(w http.ResponseWriter, code int, msg string) {
 	RespondWithJSON(w, code, map[string]string{"message": msg})
 }

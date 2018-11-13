@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-//PresignedTrack type details
+//PresignedTrack model
 type PresignedTrack struct {
 	Name   string      `json:"name"`
 	URL    string      `json:"url"`

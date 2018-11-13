@@ -101,15 +101,15 @@ func createS3Client(cfg aws.Config, dev bool) (*s3.S3, error) {
 //specified in parameter url
 func createCustomS3Endpoint(url string) aws.EndpointResolverFunc {
 	defaultResolver := endpoints.NewDefaultResolver()
-	s3CustomResolver := func(serice, region string) (aws.Endpoint, error) {
-		if serice == endpoints.S3ServiceID {
+	s3CustomResolver := func(service, region string) (aws.Endpoint, error) {
+		if service == endpoints.S3ServiceID {
 			return aws.Endpoint{
 				URL:           url,
 				SigningRegion: "ua-east-1",
 			}, nil
 		}
 
-		return defaultResolver.ResolveEndpoint(serice, region)
+		return defaultResolver.ResolveEndpoint(service, region)
 	}
 
 	return s3CustomResolver

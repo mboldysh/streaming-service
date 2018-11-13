@@ -6,21 +6,24 @@ import (
 	"github.com/mboldysh/streaming-service/pkg/router"
 )
 
-type trackHandler struct {
+//userRouter is a router to talk with the user controller
+type userRouter struct {
 	trackService service.TrackService
 }
 
+//New initialize a new user router
 func New(trackService service.TrackService) router.Router {
-	h := &trackHandler{
+	h := &userRouter{
 		trackService: trackService,
 	}
 	return h.initRoutes()
 }
 
-func (s *trackHandler) initRoutes() router.Router {
+//initRoutes initializes routes in user router
+func (s *userRouter) initRoutes() router.Router {
 	r := chi.NewRouter()
-	r.Post("/{userID}/tracks", s.Upload)
-	r.Get("/{userID}/tracks", s.FindAll)
-	r.Get("/{userID}/tracks/{trackName}", s.GetPresignedURL)
-	return router.New("/users", r)
+	r.Post("/{userID}/tracks", s.upload)
+	r.Get("/{userID}/tracks", s.findAll)
+	r.Get("/{userID}/tracks/{trackName}", s.getPresignedURL)
+	return router.NewHandler("/users", r)
 }

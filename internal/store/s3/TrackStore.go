@@ -9,17 +9,19 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 	"github.com/mboldysh/streaming-service/internal/model"
-	"github.com/mboldysh/streaming-service/internal/store/s3/bucket"
+	"github.com/mboldysh/streaming-service/internal/store"
+	"github.com/mboldysh/streaming-service/pkg/bucket"
 )
 
-type TrackStore struct {
+type trackStore struct {
 	bucketName string
 	client     *s3.S3
 	uploader   *s3manager.Uploader
 	expireTime time.Duration
 }
 
-func NewTrackStore(client *s3.S3, uploader *s3manager.Uploader, bucketName string, expireTime time.Duration) (*TrackStore, error) {
+//NewTrackStore initialize a new TrackStore
+func NewTrackStore(client *s3.S3, uploader *s3manager.Uploader, bucketName string, expireTime time.Duration) (store.TrackStore, error) {
 
 	_, err := bucket.CreateIfDoesntExists(client, bucketName)
 
@@ -27,7 +29,7 @@ func NewTrackStore(client *s3.S3, uploader *s3manager.Uploader, bucketName strin
 		return nil, err
 	}
 
-	return &TrackStore{
+	return &trackStore{
 		bucketName: bucketName,
 		client:     client,
 		uploader:   uploader,
@@ -35,7 +37,8 @@ func NewTrackStore(client *s3.S3, uploader *s3manager.Uploader, bucketName strin
 	}, nil
 }
 
-func (s *TrackStore) Upload(key string, file io.Reader) error {
+//Upload uploads file to bucket with specified key
+func (s *trackStore) Upload(key string, file io.Reader) error {
 	_, err := s.uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(s.bucketName),
 		Key:    aws.String(key),
@@ -45,8 +48,8 @@ func (s *TrackStore) Upload(key string, file io.Reader) error {
 	return err
 }
 
-//FindAll objects in a bucket using pagination
-func (s *TrackStore) FindAll(userID string) ([]model.Track, error) {
+//FindAll finds all objects in a bucket using pagination
+func (s *trackStore) FindAll(userID string) ([]model.Track, error) {
 	var trackList []model.Track
 
 	req := s.client.ListObjectsV2Request(&s3.ListObjectsV2Input{
@@ -74,7 +77,8 @@ func (s *TrackStore) FindAll(userID string) ([]model.Track, error) {
 	return trackList, nil
 }
 
-func (s *TrackStore) GetPresignedURL(key, trackName string) (*model.PresignedTrack, error) {
+//GetPresignedURL returns presignedURL for specified key
+func (s *trackStore) GetPresignedURL(key, trackName string) (*model.PresignedTrack, error) {
 	ok, err := bucket.ObjectExists(s.client, s.bucketName, key)
 
 	if err != nil {

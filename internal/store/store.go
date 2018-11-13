@@ -6,7 +6,7 @@ import (
 	"github.com/mboldysh/streaming-service/internal/model"
 )
 
-//TrackStore represent
+//TrackStore representation
 type TrackStore interface {
 	Upload(key string, file io.Reader) error
 	FindAll(userID string) ([]model.Track, error)
