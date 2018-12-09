@@ -9,14 +9,18 @@ import (
 
 type healthcheck struct{}
 
-func NewHealthCheck() router.Router {
-	return healthcheck{}.initRoutes()
+// func NewHealthCheck() router.Router {
+// 	return healthcheck{}.initRoutes()
+// }
+
+// func (h healthcheck) initRoutes() router.Endpoint {
+// 	return router.Get("/metrics/health", h.healthHandler)
+// }
+
+func HealthCheck() router.Endpoint {
+	return router.Get("/metrics/health", healthHandler)
 }
 
-func (h healthcheck) initRoutes() router.Router {
-	return router.NewRouter("/metrics/health", h.healthHandler)
-}
-
-func (h healthcheck) healthHandler(w http.ResponseWriter, r *http.Request) {
+func healthHandler(w http.ResponseWriter, r *http.Request) {
 	httpwriter.RespondWithJSON(w, http.StatusOK, nil)
 }

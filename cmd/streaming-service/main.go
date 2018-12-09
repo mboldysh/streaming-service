@@ -36,7 +36,7 @@ func main() {
 
 	server.InitRoutes(
 		userrouter,
-		metrics.NewHealthCheck(),
+		metrics.HealthCheck(),
 	)
 
 	server.Run()

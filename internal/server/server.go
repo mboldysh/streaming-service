@@ -25,7 +25,12 @@ func New(listenAddr string) *Server {
 func (s *Server) InitRoutes(routes ...router.Router) {
 	s.handler.Route("/api/v1", func(r chi.Router) {
 		for _, route := range routes {
-			r.Mount(route.Prefix(), route.Handler())
+			endpoint, ok := route.(router.Endpoint)
+			if ok {
+				r.Method(endpoint.Method(), endpoint.Path(), endpoint.Handler())
+			} else {
+				r.Mount(route.Path(), route.Handler())
+			}
 		}
 	})
 }

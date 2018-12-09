@@ -25,5 +25,5 @@ func (s *userRouter) initRoutes() router.Router {
 	r.Post("/{userID}/tracks", s.upload)
 	r.Get("/{userID}/tracks", s.findAll)
 	r.Get("/{userID}/tracks/{trackName}", s.getPresignedURL)
-	return router.NewHandler("/users", r)
+	return router.NewRouter("/users", r)
 }
