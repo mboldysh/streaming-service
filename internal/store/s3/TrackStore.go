@@ -106,3 +106,19 @@ func (s *trackStore) GetPresignedURL(key, trackName string) (*model.PresignedTra
 		Header: header,
 	}, nil
 }
+
+//DeleteObject deletes object by key
+func (s *trackStore) DeleteObject(key string) error {
+	req := s.client.DeleteObjectRequest(&s3.DeleteObjectInput{
+		Bucket: aws.String(s.bucketName),
+		Key:    aws.String(key),
+	})
+
+	_, err := req.Send()
+	
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

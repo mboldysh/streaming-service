@@ -48,6 +48,28 @@ func (s trackService) GetPresignedURL(userID, trackName string) (*model.Presigne
 	return s.trackStore.GetPresignedURL(key, trackName)
 }
 
+//DeleteObject deletes object by key and return all user tracks
+func (s trackService) DeleteObject(userID, trackName string) ([]model.Track, error) {
+	err := s.trackStore.DeleteObject(genKey(userID, trackName))
+
+	if err != nil {
+		return nil, err
+	}
+
+	tracks, err := s.trackStore.FindAll(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	prefix := fmt.Sprintf("%s/", userID)
+
+	for index, track := range tracks {
+		tracks[index].Name = strings.TrimPrefix(track.Name, prefix)
+	}
+	return tracks, err
+}
+
 //genKey generates bucket key
 func genKey(userID, trackName string) string {
 	return fmt.Sprintf("%s/%s", userID, trackName)

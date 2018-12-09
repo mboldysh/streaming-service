@@ -25,5 +25,6 @@ func (s *userRouter) initRoutes() router.Router {
 	r.Post("/{userID}/tracks", s.upload)
 	r.Get("/{userID}/tracks", s.findAll)
 	r.Get("/{userID}/tracks/{trackName}", s.getPresignedURL)
+	r.Delete("/{userID}/tracks/{trackName}", s.deleteObject)
 	return router.NewRouter("/users", r)
 }
