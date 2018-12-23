@@ -50,7 +50,7 @@ func (s *trackStore) Upload(key string, file io.Reader) error {
 
 //FindAll finds all objects in a bucket using pagination
 func (s *trackStore) FindAll(userID string) ([]model.Track, error) {
-	var trackList []model.Track
+	trackList := make([]model.Track, 0)
 
 	req := s.client.ListObjectsV2Request(&s3.ListObjectsV2Input{
 		Bucket: aws.String(s.bucketName),
@@ -115,7 +115,7 @@ func (s *trackStore) DeleteObject(key string) error {
 	})
 
 	_, err := req.Send()
-	
+
 	if err != nil {
 		return err
 	}
