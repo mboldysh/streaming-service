@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/mboldysh/streaming-service/internal/router/userrouter"
 	"github.com/mboldysh/streaming-service/pkg/metrics"
 
@@ -32,7 +33,16 @@ func main() {
 
 	server := server.New(cfg.ListenAddr)
 
-	server.InitMiddleware(middleware.Logger)
+	cors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	})
+
+	server.InitMiddleware(middleware.Logger, cors.Handler)
 
 	server.InitRoutes(
 		userrouter,
