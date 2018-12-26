@@ -37,6 +37,10 @@ Parameters:
     Description: The ECS service auto scaling role ARN
     Type: String
 
+  DataBucketName:
+    Description: Name of the bucket in which app data will be stored
+    Type: String
+
 Resources:
 
   Service:
@@ -62,6 +66,9 @@ Resources:
           Essential: true
           Image: 555818183070.dkr.ecr.us-east-2.amazonaws.com/streaming-service:latest
           Memory: 128
+          Command: 
+            - "-b"
+            - !Ref DataBucketName
           PortMappings:
             - ContainerPort: 8080
           Environment:

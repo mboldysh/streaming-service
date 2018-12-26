@@ -1,0 +1,14 @@
+Description: >
+  This template deploys a bucket for store cloudformation templates
+
+Parameters:
+
+  BucketName:
+    Description: A name of a bucket which will cloudformation templates
+    Type: String 
+
+Resources:
+  s3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Ref BucketName

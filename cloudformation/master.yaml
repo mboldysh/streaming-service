@@ -3,6 +3,13 @@ Description: >
     across two Availabilty Zones. It deploys an Internet Gateway, with a default 
     route on the public subnets. It deploys a pair of NAT Gateways (one in each AZ), 
     and default routes for them in the private subnets.
+
+Parameters:
+
+    DataBucketName:
+        Description: Name of the bucket in which app data will be stored
+        Type: String
+
 Resources:
 
     VPC:
@@ -64,14 +71,15 @@ Resources:
             Parameters:
                 VPC: !GetAtt VPC.Outputs.VPC
                 Cluster: !GetAtt ECS.Outputs.Cluster
-                MinCapacity: 1
+                MinCapacity: 2
                 MaxCapacity: 6
                 DesiredCount: 2
                 Listener: !GetAtt ALB.Outputs.Listener
                 Path: "/api/*"
                 ECSServiceAutoScalingRoleARN: !GetAtt ECS.Outputs.ECSServiceAutoScalingRole
+                DataBucketName: !Ref DataBucketName
 
 Outputs:
     StreamingServiceUrl:
         Description: The URL endpoint for the streaming-service
-        Value: !Join ["/", [ !GetAtt ALB.Outputs.LoadBalancerUrl, "api" ]]
+        Value: !Join ["", [ "http://", !GetAtt ALB.Outputs.LoadBalancerUrl ]]
