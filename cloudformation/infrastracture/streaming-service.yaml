@@ -41,6 +41,10 @@ Parameters:
     Description: Name of the bucket in which app data will be stored
     Type: String
 
+  Image:
+    Description: Docker image address
+    Type: String
+
 Resources:
 
   Service:
@@ -64,7 +68,7 @@ Resources:
       ContainerDefinitions:
         - Name: streaming-service
           Essential: true
-          Image: 555818183070.dkr.ecr.us-east-2.amazonaws.com/streaming-service:latest
+          Image: !Ref Image
           Memory: 128
           Command: 
             - "-b"

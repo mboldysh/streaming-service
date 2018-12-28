@@ -10,6 +10,10 @@ Parameters:
         Description: Name of the bucket in which app data will be stored
         Type: String
 
+    Image:
+        Description: Docker image address
+        Type: String
+
 Resources:
 
     VPC:
@@ -78,6 +82,7 @@ Resources:
                 Path: "/api/*"
                 ECSServiceAutoScalingRoleARN: !GetAtt ECS.Outputs.ECSServiceAutoScalingRole
                 DataBucketName: !Ref DataBucketName
+                Image: !Ref Image
 
 Outputs:
     StreamingServiceUrl:

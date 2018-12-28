@@ -22,14 +22,16 @@ deploy:
 	@echo "+ $@"
 	aws --region $(REGION) cloudformation create-stack --stack-name $(NAME) --template-body file://master.yaml \
 	--capabilities CAPABILITY_NAMED_IAM \
-	--parameters ParameterKey=DataBucketName,ParameterValue=$(DATA_BUCKET)
+	--parameters ParameterKey=DataBucketName,ParameterValue=$(DATA_BUCKET) \
+	ParameterKey=Image,ParameterValue=$(IMAGE_ADDRESS)
 
 .PHONY: update-stack
 update-stack:
 	@echo "+ $@"
 	aws --region $(REGION) cloudformation update-stack --stack-name $(NAME) --template-body file://master.yaml \
 	--capabilities CAPABILITY_NAMED_IAM \
-	--parameters ParameterKey=DataBucketName,ParameterValue=$(DATA_BUCKET)
+	--parameters ParameterKey=DataBucketName,ParameterValue=$(DATA_BUCKET) \
+	ParameterKey=Image,ParameterValue=$(IMAGE_ADDRESS)
 
 .PHONY: create-cloudformation-bucket
 create-cloudformation-bucket:
