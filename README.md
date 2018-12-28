@@ -79,15 +79,15 @@ docker build -t streaming-service:latest .
 ```
 3. Push docker image to container registry(e.g. Docker Hub or AWS ECR)
 
-4. Configure deployment parameters. Open .env file in /cloudformation directory.
-As S3 bucket name is globally unique, buckets name should be changed to unique ones.
+4. Configure deployment parameters. Open .env file in cloudformation directory.
+As S3 bucket name is globally unique, buckets names should be changed to unique ones.
 IMAGE_ADDRESS should be set to the adress of the image which was pushed in previous step.
-Optionally, REGION can be changed to preferable region
+Optionally, REGION can be changed to preferable one
 
 5. Deploy stack:
 
 ```console
-# Open /cloudformation folder
+# Open cloudformation folder
 cd cloudformation
 # Deploy stack
 make full-deploy

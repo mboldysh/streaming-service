@@ -4,7 +4,7 @@ Description: >
 Parameters:
 
   BucketName:
-    Description: A name of a bucket which will cloudformation templates
+    Description: A name of a bucket which will store cloudformation templates
     Type: String 
 
 Resources:

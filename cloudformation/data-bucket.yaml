@@ -1,0 +1,23 @@
+Description: >
+  This template deploys a bucket for store streaming-service data
+
+Parameters:
+
+  BucketName:
+    Description: A name of a bucket which will store streaming-service data
+    Type: String 
+
+Resources:
+  s3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Ref BucketName
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+          - Authorization
+          MaxAge: '3000'
+          AllowedMethods:
+          - GET
+          AllowedOrigins:
+          - '*'

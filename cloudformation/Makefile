@@ -2,9 +2,10 @@ include .env
 
 NAME := streaming-service
 CLOUDFORMATION_BUCKET_STACK_NAME = streaming-service-cloudformation-bucket
+DATA_BUCKET_STACK_NAME = streaming-service-data-bucket
 
 all: validate sync deploy
-full-deploy: validate create-cloudformation-bucket sync deploy
+full-deploy: validate create-cloudformation-bucket create-data-bucket sync deploy
 update: validate sync update-stack
 
 .PHONY: validate
@@ -40,3 +41,11 @@ create-cloudformation-bucket:
 	--template-body file://cloudformation-stack-bucket.yaml \
 	--parameters ParameterKey=BucketName,ParameterValue=$(CLOUDFORMATIONS_BUCKET)
 	aws --region $(REGION) cloudformation wait stack-create-complete --stack-name $(CLOUDFORMATION_BUCKET_STACK_NAME)
+
+.PHONY: create-data-bucket
+create-data-bucket:
+	@echo "+ $@"
+	aws --region $(REGION) cloudformation create-stack --stack-name $(DATA_BUCKET_STACK_NAME) \
+	--template-body file://data-bucket.yaml \
+	--parameters ParameterKey=BucketName,ParameterValue=$(DATA_BUCKET)
+	aws --region $(REGION) cloudformation wait stack-create-complete --stack-name $(DATA_BUCKET_STACK_NAME)
